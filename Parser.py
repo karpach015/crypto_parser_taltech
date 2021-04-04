@@ -1,6 +1,17 @@
 import re
 import requests
+from multiprocessing import Pool
 from bs4 import BeautifulSoup as Bs
+
+
+def make_all(url):
+    html = requests.get(url).text
+    data = set()
+    soup = Bs(html, 'html.parser').select("tbody tr")
+    for tr in soup:
+        [data.add(coin['href']) for coin in tr.select("td")[2].select("a")]
+
+    return data
 
 
 class MyParser:
@@ -24,18 +35,16 @@ class MyParser:
         return all_coins
 
     def parse_coin_market(self):
-        return set()
-
         response = requests.get(self.urls_dict['coin_market'])
         html = Bs(response.content, 'html.parser')
         page_num = int(html.select(".sc-8ccaqg-3 ul li")[-2].select("a")[0].text)
         all_coins = set()
+        all_urls = [f"{self.urls_dict['coin_market']}?page={page}" for page in range(1, page_num + 1)]
 
-        for i in range(1, page_num + 1):
-            page_response = requests.get(f"{self.urls_dict['coin_market']}?page={i}")
-            for tr in Bs(page_response.content, 'html.parser').select("tbody tr"):
-                [all_coins.add(coin['href']) for coin in tr.select("td")[2].select("a")]
+        with Pool(4) as p:
+            coins = p.map(make_all, all_urls)
 
+        [[all_coins.add(f"{self.urls_dict['coin_market'][:-1]}{coin}") for coin in coin_list] for coin_list in coins]
         return all_coins
 
     def parse_coin_gecko(self):
