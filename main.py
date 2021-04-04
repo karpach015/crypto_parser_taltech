@@ -1,6 +1,7 @@
 import config
 import asyncio
 import logging
+import time
 
 from aiogram import Bot, Dispatcher, executor
 from Parser import MyParser
@@ -17,6 +18,8 @@ async def main(wait_for):
                  "coin_market": {}}
 
     while True:
+        start = time.time()
+
         skip_gecko = False
         skip_market = False
 
@@ -44,21 +47,23 @@ async def main(wait_for):
 
             if not skip_gecko and not skip_market:
                 for new_coin in new_coins:
-                    # print(new_coin)
-                    await bot.send_message(config.CHAT_ID, new_coin)
+                    print(new_coin)
+                    # await bot.send_message(config.CHAT_ID, new_coin)
 
             elif not skip_gecko:
                 for new_coin in new_coin_gecko:
-                    # print(new_coin)
-                    await bot.send_message(config.CHAT_ID, new_coin)
+                    print(new_coin)
+                    # await bot.send_message(config.CHAT_ID, new_coin)
 
             elif not skip_market:
                 for new_coin in new_coin_market:
-                    # print(new_coin)
-                    await bot.send_message(config.CHAT_ID, new_coin)
+                    print(new_coin)
+                    # await bot.send_message(config.CHAT_ID, new_coin)
+
+        logging.info(f"Time passed {time.time() - start}")
 
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
-    loop.create_task(main(2))
+    loop.create_task(main(1))
     executor.start_polling(dp, skip_updates=True)
