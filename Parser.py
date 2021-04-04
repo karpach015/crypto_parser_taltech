@@ -16,25 +16,27 @@ class MyParser:
         response = requests.get(self.urls_dict['site_map'])
         lines = [x for x in str(response.content).split("0.5") if "/coin" in x]
 
-        all_urls = set()
+        all_coins = set()
 
         for line in lines:
-            all_urls.add(re.findall(r'<loc>.+</loc>', line)[0][5:-6])
+            all_coins.add(re.findall(r'<loc>.+</loc>', line)[0][5:-6])
 
-        return all_urls
+        return all_coins
 
     def parse_coin_market(self):
+        return set()
+
         response = requests.get(self.urls_dict['coin_market'])
         html = Bs(response.content, 'html.parser')
         page_num = int(html.select(".sc-8ccaqg-3 ul li")[-2].select("a")[0].text)
         all_coins = set()
 
-        # for i in range(1, page_num + 1):
-        #     page_response = requests.get(f"{self.urls_dict['coin_market']}?page={i}")
-        #     for tr in Bs(page_response.content, 'html.parser').select("tbody tr"):
-        #         [all_coins.add(coin['href']) for coin in tr.select("td")[2].select("a")]
+        for i in range(1, page_num + 1):
+            page_response = requests.get(f"{self.urls_dict['coin_market']}?page={i}")
+            for tr in Bs(page_response.content, 'html.parser').select("tbody tr"):
+                [all_coins.add(coin['href']) for coin in tr.select("td")[2].select("a")]
 
-        return page_num
+        return all_coins
 
     def parse_coin_gecko(self):
         response = requests.get(self.urls_dict['coin_gecko'])
