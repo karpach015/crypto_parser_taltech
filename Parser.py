@@ -41,7 +41,7 @@ class MyParser:
         all_coins = set()
         all_urls = [f"{self.urls_dict['coin_market']}?page={page}" for page in range(1, page_num + 1)]
 
-        with Pool(4) as p:
+        with Pool(8) as p:
             coins = p.map(make_all, all_urls)
 
         [[all_coins.add(f"{self.urls_dict['coin_market'][:-1]}{coin}") for coin in coin_list] for coin_list in coins]
