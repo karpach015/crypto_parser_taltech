@@ -1,33 +1,32 @@
 import config
 import asyncio
 import logging
-import requests
-# import tracemalloc
 
 from aiogram import Bot, Dispatcher, executor, types
-from bs4 import BeautifulSoup as Bs
+from Parser import MyParser
 
 logging.basicConfig(level=logging.INFO)
 
 bot = Bot(token=config.TOKEN)
 dp = Dispatcher(bot)
+parser = MyParser()
 
 
-async def get_new_urls(wait_for):
-    parse_url = "https://assets.coingecko.com/sitemap1.xml"
-    prev_urls = set()
-    # tracemalloc.start()
+async def main(wait_for):
+    i = 0
     while True:
         await asyncio.sleep(wait_for)
 
-        response = requests.get(parse_url)
+        with open('data.txt', 'a') as file:
+            file.write(str(i) + ") " + str(parser.parse_coin_market()) + "\n")
 
-        html = Bs(response.content, 'lxml')
-        # current, peak = tracemalloc.get_traced_memory()
-        # print(f"Current memory usage is {current / 10 ** 6}MB; Peak was {peak / 10 ** 6}MB")
+        with open('data.txt', 'r') as file:
+            x = str(file.readlines())
+            logging.info(x)
+        i += 1
 
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
-    loop.create_task(get_new_urls(2))
+    loop.create_task(main(2))
     executor.start_polling(dp, skip_updates=True)
