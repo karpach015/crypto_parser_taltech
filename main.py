@@ -51,18 +51,15 @@ async def main(wait_for):
 
             if not skip_gecko and not skip_market:
                 for new_coin in new_coins:
-                    print(new_coin)
-                    # await bot.send_message(config.CHAT_ID, new_coin)
+                    await bot.send_message(config.CHAT_ID, new_coin)
 
             elif not skip_gecko:
                 for new_coin in new_coin_gecko:
-                    print(new_coin)
-                    # await bot.send_message(config.CHAT_ID, new_coin)
+                    await bot.send_message(config.CHAT_ID, new_coin)
 
             elif not skip_market:
                 for new_coin in new_coin_market:
-                    print(new_coin)
-                    # await bot.send_message(config.CHAT_ID, new_coin)
+                    await bot.send_message(config.CHAT_ID, new_coin)
 
 
 if __name__ == '__main__':
