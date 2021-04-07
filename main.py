@@ -18,8 +18,6 @@ async def main(wait_for):
                  "coin_market": {}}
 
     while True:
-        start = time.time()
-
         skip_gecko = False
         skip_market = False
 
@@ -35,8 +33,14 @@ async def main(wait_for):
         if len(old_coins['coin_market']) == 0:
             skip_market = True
 
-        new_coin_gecko = parser.parse_sitemap_coin_gecko() - old_coins['coin_gecko']
+        start = time.time()
+        new_coin_gecko = parser.parse_coin_gecko() - old_coins['coin_gecko']
+        logging.info(f"Time for parsing Coin Gecko: <{time.time() - start}>")
+
+        start = time.time()
         new_coin_market = parser.parse_coin_market() - old_coins['coin_market']
+        logging.info(f"Time for parsing Coin Gecko: <{time.time() - start}>")
+
         new_coins = new_coin_gecko | new_coin_market
 
         if len(new_coins) > 0:
@@ -47,20 +51,18 @@ async def main(wait_for):
 
             if not skip_gecko and not skip_market:
                 for new_coin in new_coins:
-                    # print(new_coin)
-                    await bot.send_message(config.CHAT_ID, new_coin)
+                    print(new_coin)
+                    # await bot.send_message(config.CHAT_ID, new_coin)
 
             elif not skip_gecko:
                 for new_coin in new_coin_gecko:
-                    # print(new_coin)
-                    await bot.send_message(config.CHAT_ID, new_coin)
+                    print(new_coin)
+                    # await bot.send_message(config.CHAT_ID, new_coin)
 
             elif not skip_market:
                 for new_coin in new_coin_market:
-                    # print(new_coin)
-                    await bot.send_message(config.CHAT_ID, new_coin)
-
-        logging.info(f"Time passed {time.time() - start}")
+                    print(new_coin)
+                    # await bot.send_message(config.CHAT_ID, new_coin)
 
 
 if __name__ == '__main__':
