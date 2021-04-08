@@ -67,6 +67,4 @@ class MyParser:
 
         [[all_coins.add(f"{self.urls_dict['coin_gecko']}{coin}") for coin in coin_list] for coin_list in coins]
 
-        print(f" |||| {all_coins} ||||||")
-
         return all_coins
