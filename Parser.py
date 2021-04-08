@@ -18,7 +18,8 @@ def get_coin_from_coin_gecko(url):
     html = requests.get(url)
     data = set()
     soup = Bs(html.content, 'html.parser').select("tbody tr td.coin-name a")
-    return [data.add(coin['href']) for coin in soup]
+    [data.add(coin['href'][3:]) for coin in soup]
+    return data
 
 
 class MyParser:
@@ -65,5 +66,7 @@ class MyParser:
             coins = p.map(get_coin_from_coin_gecko, all_urls)
 
         [[all_coins.add(f"{self.urls_dict['coin_gecko']}{coin}") for coin in coin_list] for coin_list in coins]
+
+        print(f" |||| {all_coins} ||||||")
 
         return all_coins
