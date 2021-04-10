@@ -28,7 +28,7 @@ class MyParser:
         self.urls_dict = {
             "site_map": "https://assets.coingecko.com/sitemap1.xml",
             "coin_market": "https://coinmarketcap.com/",
-            "coin_gecko": "https://www.coingecko.com/en"
+            "coin_gecko": "https://www.coingecko.com/en",
         }
 
     def parse_sitemap_coin_gecko(self):
@@ -53,6 +53,11 @@ class MyParser:
             coins = p.map(get_coin_from_coin_market, all_urls)
 
         [[all_coins.add(f"{self.urls_dict['coin_market'][:-1]}{coin}") for coin in coin_list] for coin_list in coins]
+        return all_coins
+
+    def parse_coin_market_new(self):
+        all_coins = set()
+        [all_coins.add(self.urls_dict['coin_market'][:-1] + coin) for coin in get_coin_from_coin_market(self.urls_dict['coin_market'] + "/new/")]
         return all_coins
 
     def parse_coin_gecko(self):

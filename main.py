@@ -38,7 +38,7 @@ async def main(wait_for):
         logging.info(f"Time for parsing Coin Gecko: <{time.time() - start}>")
 
         start = time.time()
-        new_coin_market = parser.parse_coin_market() - old_coins['coin_market']
+        new_coin_market = (parser.parse_coin_market() | parser.parse_coin_market_new()) - old_coins['coin_market']
         logging.info(f"Time for parsing Coin Market: <{time.time() - start}>")
 
         new_coins = new_coin_gecko | new_coin_market
