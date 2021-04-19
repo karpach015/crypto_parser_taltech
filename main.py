@@ -69,4 +69,4 @@ async def main(wait_for):
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.create_task(main(1))
-    executor.start_polling(dp, loop=True, skip_updates=True)
+    executor.start_polling(dp, skip_updates=True)
