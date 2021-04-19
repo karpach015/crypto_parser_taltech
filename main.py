@@ -62,8 +62,8 @@ async def main(wait_for):
                 elif not skip_market:
                     for new_coin in new_coin_market:
                         await bot.send_message(config.CHAT_ID, new_coin)
-        except:
-            pass
+        except Exception as e:
+            await bot.send_message(config.CHAT_ID, e)
 
 
 if __name__ == '__main__':
