@@ -57,6 +57,8 @@ class MyParser:
 
     def parse_coin_market_new(self):
         all_coins = set()
+        x = [1]
+        print(x[1])
         [all_coins.add(self.urls_dict['coin_market'][:-1] + coin) for coin in get_coin_from_coin_market(self.urls_dict['coin_market'] + "/new/")]
         return all_coins
 
