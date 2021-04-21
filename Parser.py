@@ -6,6 +6,10 @@ from main import bot
 import config
 
 
+async def send_error_message(erro_msg):
+    await bot.send_message(config.CHAT_ID, erro_msg)
+
+
 def get_coin_from_coin_market(url):
     html = requests.get(url).text
     soup = Bs(html, 'html.parser').select("tbody tr")
@@ -14,7 +18,7 @@ def get_coin_from_coin_market(url):
         for tr in soup:
             [data.add(coin['href']) for coin in tr.select("td")[2].select("a")]
     except Exception as e:
-        await bot.send_message(config.CHAT_ID, f"@Polo_Umen\n{e}\nfunc get_coin_from_coin_market\nLine: 14-15")
+        send_error_message(f"@Polo_Umen\n{e}\nfunc get_coin_from_coin_market\nLine: 14-15")
 
     return data
 
@@ -48,15 +52,15 @@ class MyParser:
         return all_coins
 
     def parse_coin_market(self):
+        all_urls = set()
+        all_coins = set()
         try:
             response = requests.get(self.urls_dict['coin_market'])
+            html = Bs(response.content, 'html.parser')
+            page_num = int(html.select(".sc-8ccaqg-3 ul li")[-2].select("a")[0].text)
+            all_urls = [f"{self.urls_dict['coin_market']}?page={page}" for page in range(1, page_num + 1)]
         except Exception as e:
-            await bot.send_message(config.CHAT_ID, f"@Polo_Umen\n{e}\nfunc parse_coin_market\nRequest error")
-
-        html = Bs(response.content, 'html.parser')
-        page_num = int(html.select(".sc-8ccaqg-3 ul li")[-2].select("a")[0].text)
-        all_coins = set()
-        all_urls = [f"{self.urls_dict['coin_market']}?page={page}" for page in range(1, page_num + 1)]
+            send_error_message(f"@Polo_Umen\n{e}\nfunc parse_coin_market")
 
         with Pool(4) as p:
             coins = p.map(get_coin_from_coin_market, all_urls)
