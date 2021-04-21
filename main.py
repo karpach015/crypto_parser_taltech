@@ -41,7 +41,7 @@ async def main(wait_for):
         try:
             new_coin_market = (parser.parse_coin_market() | parser.parse_coin_market_new()) - old_coins['coin_market']
         except Exception as e:
-            bot.send_message(config.CHAT_ID, f"@Polo_Umen\n{e}\nmain.py | line: 42")
+            await bot.send_message(config.CHAT_ID, f"@Polo_Umen\n{e}\nmain.py | line: 42")
 
         logging.info(f"Time for parsing Coin Market: <{time.time() - start}>")
 
@@ -68,7 +68,7 @@ async def main(wait_for):
                     try:
                         await bot.send_message(config.CHAT_ID, new_coin)
                     except Exception as e:
-                        bot.send_message(config.CHAT_ID, f"@Polo_Umen\n{e}\nmain.py | line: 69")
+                        await bot.send_message(config.CHAT_ID, f"@Polo_Umen\n{e}\nmain.py | line: 69")
 
 
 if __name__ == '__main__':
