@@ -2,15 +2,14 @@ import re
 import requests
 from multiprocessing import Pool
 from bs4 import BeautifulSoup as Bs
-from main import bot
-import config
 
 
-async def send_error_message(error_msg):
-    await bot.send_message(config.CHAT_ID, error_msg)
+class ErrorParser(Exception):
+    def __init__(self, error_msg):
+        self.error_msg = error_msg
 
 
-async def get_coin_from_coin_market(url):
+def get_coin_from_coin_market(url):
     html = requests.get(url).text
     soup = Bs(html, 'html.parser').select("tbody tr")
     data = set()
@@ -18,7 +17,7 @@ async def get_coin_from_coin_market(url):
         for tr in soup:
             [data.add(coin['href']) for coin in tr.select("td")[2].select("a")]
     except Exception as e:
-        await send_error_message(f"@Polo_Umen\n{e}\nfunc get_coin_from_coin_market\nLine: 14-15")
+        raise ErrorParser(f"@Polo_Umen\n{e}\nfunc get_coin_from_coin_market\nLine: 14-15")
 
     return data
 
@@ -51,7 +50,7 @@ class MyParser:
 
         return all_coins
 
-    async def parse_coin_market(self):
+    def parse_coin_market(self):
         all_urls = set()
         all_coins = set()
         try:
@@ -60,7 +59,7 @@ class MyParser:
             page_num = int(html.select(".sc-8ccaqg-3 ul li")[-2].select("a")[0].text)
             all_urls = [f"{self.urls_dict['coin_market']}?page={page}" for page in range(1, page_num + 1)]
         except Exception as e:
-            await send_error_message(f"@Polo_Umen\n{e}\nfunc parse_coin_market")
+            raise ErrorParser(f"@Polo_Umen\n{e}\nfunc parse_coin_market")
 
         with Pool(4) as p:
             coins = p.map(get_coin_from_coin_market, all_urls)
@@ -70,8 +69,6 @@ class MyParser:
 
     def parse_coin_market_new(self):
         all_coins = set()
-        x = [1]
-        print(x[1])
         [all_coins.add(self.urls_dict['coin_market'][:-1] + coin) for coin in get_coin_from_coin_market(self.urls_dict['coin_market'] + "/new/")]
         return all_coins
 

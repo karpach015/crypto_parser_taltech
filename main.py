@@ -4,7 +4,7 @@ import logging
 import time
 
 from aiogram import Bot, Dispatcher, executor
-from Parser import MyParser
+from Parser import MyParser, ErrorParser
 
 logging.basicConfig(level=logging.INFO)
 
@@ -38,7 +38,10 @@ async def main(wait_for):
         # logging.info(f"Time for parsing Coin Gecko: <{time.time() - start}>")
 
         start = time.time()
-        new_coin_market = (parser.parse_coin_market() | parser.parse_coin_market_new()) - old_coins['coin_market']
+        try:
+            new_coin_market = (parser.parse_coin_market() | parser.parse_coin_market_new()) - old_coins['coin_market']
+        except ErrorParser as e:
+            await bot.send_message(config.CHAT_ID, e.error_msg)
 
         logging.info(f"Time for parsing Coin Market: <{time.time() - start}>")
 
