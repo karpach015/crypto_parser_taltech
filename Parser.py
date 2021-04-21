@@ -2,14 +2,19 @@ import re
 import requests
 from multiprocessing import Pool
 from bs4 import BeautifulSoup as Bs
+from main import bot
+import config
 
 
 def get_coin_from_coin_market(url):
     html = requests.get(url).text
-    data = set()
     soup = Bs(html, 'html.parser').select("tbody tr")
-    for tr in soup:
-        [data.add(coin['href']) for coin in tr.select("td")[2].select("a")]
+    data = set()
+    try:
+        for tr in soup:
+            [data.add(coin['href']) for coin in tr.select("td")[2].select("a")]
+    except Exception as e:
+        await bot.send_message(config.CHAT_ID, f"@Polo_Umen\n{e}\nfunc get_coin_from_coin_market\nLine: 14-15")
 
     return data
 
@@ -43,7 +48,11 @@ class MyParser:
         return all_coins
 
     def parse_coin_market(self):
-        response = requests.get(self.urls_dict['coin_market'])
+        try:
+            response = requests.get(self.urls_dict['coin_market'])
+        except Exception as e:
+            await bot.send_message(config.CHAT_ID, f"@Polo_Umen\n{e}\nfunc parse_coin_market\nRequest error")
+
         html = Bs(response.content, 'html.parser')
         page_num = int(html.select(".sc-8ccaqg-3 ul li")[-2].select("a")[0].text)
         all_coins = set()
