@@ -38,6 +38,7 @@ async def main(wait_for):
         # logging.info(f"Time for parsing Coin Gecko: <{time.time() - start}>")
 
         start = time.time()
+        new_coin_market = set()
         try:
             new_coin_market = (parser.parse_coin_market() | parser.parse_coin_market_new()) - old_coins['coin_market']
         except Exception as e:
