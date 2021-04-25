@@ -73,11 +73,15 @@ class MyParser:
         return all_coins
 
     def parse_coin_gecko(self):
-        response = requests.get(self.urls_dict['coin_gecko'])
-        html = Bs(response.content, 'html.parser')
-        page_num = int(html.select("nav.pagy-bootstrap-nav ul li")[-2].select("a")[0].text)
         all_coins = set()
-        all_urls = [f"{self.urls_dict['coin_gecko']}?page={page}" for page in range(1, page_num + 1)]
+        all_urls = []
+        try:
+            response = requests.get(self.urls_dict['coin_gecko'])
+            html = Bs(response.content, 'html.parser')
+            page_num = int(html.select("nav.pagy-bootstrap-nav ul li")[-2].select("a")[0].text)
+            all_urls = [f"{self.urls_dict['coin_gecko']}?page={page}" for page in range(1, page_num + 1)]
+        except Exception as e:
+            raise ErrorParser(f"@Polo_Umen\n{e}\nfunc parse_coin_gecko")
 
         with Pool(8) as p:
             coins = p.map(get_coin_from_coin_gecko, all_urls)

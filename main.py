@@ -33,11 +33,19 @@ async def main(wait_for):
         if len(old_coins['coin_market']) == 0:
             skip_market = True
 
-        # start = time.time()
-        # new_coin_gecko = parser.parse_coin_gecko() - old_coins['coin_gecko']
-        # logging.info(f"Time for parsing Coin Gecko: <{time.time() - start}>")
+        start = time.time()
+
+        new_coin_gecko = set()
+        try:
+            new_coin_gecko = parser.parse_coin_gecko() - old_coins['coin_gecko']
+        except ErrorParser as e:
+            await bot.send_message(config.CHAT_ID, e.error_msg)
+
+        logging.info(f"Time for parsing Coin Gecko: <{time.time() - start}>")
 
         start = time.time()
+
+        new_coin_market = set()
         try:
             new_coin_market = (parser.parse_coin_market() | parser.parse_coin_market_new()) - old_coins['coin_market']
         except ErrorParser as e:
@@ -45,11 +53,11 @@ async def main(wait_for):
 
         logging.info(f"Time for parsing Coin Market: <{time.time() - start}>")
 
-        # new_coins = new_coin_gecko | new_coin_market
-        new_coins = new_coin_market
+        new_coins = new_coin_gecko | new_coin_market
+        # new_coins = new_coin_market
 
         if len(new_coins) > 0:
-            # [old_coins['coin_gecko'].add(coin) for coin in new_coin_gecko]
+            [old_coins['coin_gecko'].add(coin) for coin in new_coin_gecko]
             [old_coins['coin_market'].add(coin) for coin in new_coin_market]
             with open('data.txt', 'w') as file:
                 file.write(str(old_coins))
