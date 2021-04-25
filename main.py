@@ -63,20 +63,32 @@ async def main(wait_for):
                 file.write(str(old_coins))
 
             if not skip_gecko and not skip_market:
-                for new_coin in new_coins:
-                    await bot.send_message(config.CHAT_ID, new_coin)
-                    await asyncio.sleep(50)
+                if len(new_coins) < 5:
+                    for new_coin in new_coins:
+                        await bot.send_message(config.CHAT_ID, new_coin)
+                        await asyncio.sleep(50)
+                else:
+                    await bot.send_message(config.CHAT_ID, group_links(new_coins))
 
-            # elif not skip_gecko:
-            #     for new_coin in new_coin_gecko:
-            #         await bot.send_message(config.CHAT_ID, new_coin)
+            elif not skip_gecko:
+                if len(new_coin_gecko) < 5:
+                    for new_coin in new_coin_gecko:
+                        await bot.send_message(config.CHAT_ID, new_coin)
+                else:
+                    await bot.send_message(config.CHAT_ID, group_links(new_coin_gecko))
 
             elif not skip_market:
-                for new_coin in new_coin_market:
-                    try:
+                if len(new_coin_market) < 5:
+                    for new_coin in new_coin_market:
                         await bot.send_message(config.CHAT_ID, new_coin)
-                    except Exception as e:
-                        await bot.send_message(config.CHAT_ID, f"@Polo_Umen\n{e}\nmain.py | line: 70")
+                else:
+                    await bot.send_message(config.CHAT_ID, group_links(new_coin_market))
+
+
+def group_links(urls):
+    msg = f"New links:\n"
+    link_group = [f"{i + 1}) {urls[i]}" for i in range(len(urls))]
+    return msg + "\n".join(link_group)
 
 
 if __name__ == '__main__':

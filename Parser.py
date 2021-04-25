@@ -17,7 +17,7 @@ def get_coin_from_coin_market(url):
         for tr in soup:
             [data.add(coin['href']) for coin in tr.select("td")[2].select("a")]
     except Exception as e:
-        raise ErrorParser(f"@Polo_Umen\n{e}\nfunc get_coin_from_coin_market\nLine: 14-15")
+        raise ErrorParser(f"@Polo_Umen\n{e}\nfunc get_coin_from_coin_market")
 
     return data
 
