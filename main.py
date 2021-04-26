@@ -86,8 +86,9 @@ async def main(wait_for):
 
 
 def group_links(urls):
+    links = list(urls)
     msg = f"New links:\n"
-    link_group = [f"{i + 1}) {urls[i]}" for i in range(len(urls))]
+    link_group = [f"{i + 1}) {links[i]}" for i in range(len(links))]
     return msg + "\n".join(link_group)
 
 
