@@ -37,7 +37,7 @@ async def main(wait_for):
 
         new_coin_gecko = set()
         try:
-            new_coin_gecko = parser.parse_coin_gecko() - old_coins['coin_gecko']
+            new_coin_gecko = parser.parse_sitemap_coin_gecko() - old_coins['coin_gecko']
         except ErrorParser as e:
             await bot.send_message(config.CHAT_ID, e.error_msg)
 
