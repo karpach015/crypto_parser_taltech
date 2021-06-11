@@ -56,7 +56,7 @@ class MyParser:
         try:
             response = requests.get(self.urls_dict['coin_market'])
             html = Bs(response.content, 'html.parser')
-            page_num = int(html.select(".sc-8ccaqg-3 ul li")[-2].select("a")[0].text)
+            page_num = int(html.select(".sc-1t7mu4i-0 ul li")[-2].select("a")[0].text)
             all_urls = [f"{self.urls_dict['coin_market']}?page={page}" for page in range(1, page_num + 1)]
         except Exception as e:
             raise ErrorParser(f"@Polo_Umen\n{e}\nfunc parse_coin_market")
